@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { fetchUser } from '../../redux/action';
 import AllUserComponent from './AllUser.component';
 import BikesByUsersComponent from './BikesByUsers.component';
-import CreatedBikesComponent from './CreatedBikes.component';
 import ReservedByComponent from './ReservedBy.component';
 
 
@@ -50,7 +49,6 @@ export const Protected = ({state,fetchUser,Component}) => {
     return (state.user.role==='manager')?(<div>{Component}</div>):(state.user.role==='regular'?(route.split('/')[route.split('/').length-1]!=='reservedBy'&& route.split('/')[route.split('/').length-1]!== 'All_User'&& route.split('/')[route.split('/').length-1]!=='Bikes_by_users')?<div>{Component}</div>:<div>You cannot access this route</div>
     :'')
 
-  /*(state.user.role==='regular'?((Component===<BikesByUsersComponent/> || Component===<AllUserComponent/> || Component===<ReservedByComponent/> || Component===<CreatedBikesComponent/>)?{navigate()}:''):'')?*//*:''*/
 } 
 
 const mapStateToProps = (state) => {

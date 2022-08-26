@@ -5,7 +5,6 @@ import Home from './Components/Home/Home.component';
 import { useEffect } from 'react';
 import { connect } from 'react-redux'
 import { fetchBikes, fetchUser, fetchAllUsers, fetchBikesWithPages } from './redux/action';
-import CreatedBikesComponent from './Components/Home/CreatedBikes.component';
 import MyBikesComponent from './Components/Home/MyBikes.component';
 import RatingComponent from './Components/Home/Rating.component';
 import ReservedByComponent from './Components/Home/ReservedBy.component';
