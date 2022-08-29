@@ -65,7 +65,7 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
         localStorage.getItem('token')!=='' && JSON.parse(localStorage.getItem('token')).expiry>new Date().getTime())
         {
             // fetchUser();
-            fetchBikes();
+            // fetchBikes();
 
         }
         else{
@@ -98,7 +98,7 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
                 temp.minRating=filter.minRating
             }
         }
-        if(filter.startDate!=='' && filter.endDate!=='' )
+        if(filter.startDate!=='' && filter.endDate!==''  && new Date(filter.startDate).getTime()<=new Date(filter.endDate).getTime())
         {
             temp.startDate=filter.startDate
             temp.endDate=filter.endDate
@@ -108,8 +108,12 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
             fetchFilteredBikes(temp)
             setIsDateSet(true)
         }
-        else{
+        else if(filter.startDate==='' || filter.endDate===''){
             toast.error('Please set both dates')
+        }
+        else if(new Date(filter.startDate).getTime()>new Date(filter.endDate).getTime())
+        {
+            toast.error('Start date cannot be less than end date')
         }
         
             
@@ -387,7 +391,7 @@ justifyContent="center">
 <br />
     
     </div><br /> 
-    <Bikes dates={filter} isDateSet={isDateSet} isFilterSet={isFilterSet}/>
+    <Bikes filter={filter} isDateSet={isDateSet} isFilterSet={isFilterSet}/>
     <ToastContainer/>
     <Stack 
     spacing={2}
@@ -414,7 +418,7 @@ const mapStateToProps = (state) => {
     return {
       fetchUser: () => dispatch(fetchUser()),
       fetchBikesWithDates: (date,filter) => dispatch(fetchBikesWithDates(date,filter)),
-      fetchFilteredBikes: (date,filter,id) => dispatch(fetchFilteredBikes(date,filter,id)),
+      fetchFilteredBikes: (filter,id) => dispatch(fetchFilteredBikes(filter,id)),
       fetchBikesWithPages: (page) => dispatch(fetchBikesWithPages(page)),
        fetchChangedPage: (page) => dispatch(fetchChangedPage(page)),
        fetchBikes: () => dispatch(fetchBikes()),

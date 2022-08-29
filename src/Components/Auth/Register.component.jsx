@@ -45,7 +45,7 @@ const Register=({formStatus,fetchBikes,fetchUser,fetchAllUsers,fetchBikesWithPag
             {withCredentials:true})
             .then((data)=>{
      
-                toast.success('Signed up successfully, Now login')
+                toast.success('Signed up successfully')
      
                 setTimeout(() => {
                     axios.post("http://localhost:3001/user/login", 
@@ -62,13 +62,13 @@ const Register=({formStatus,fetchBikes,fetchUser,fetchAllUsers,fetchBikesWithPag
                         JSON.stringify(
                             {
                                 jwt:response.data.jwt,
-                                expiry:new Date().getTime()+3600000,
+                                expiry:new Date().getTime()+5*3600000,
                                 role:response.data.role
                             }))
 
                         
                        
-                        fetchBikes();
+                        fetchUser();
                       
                         // document.cookie='token=jwt'
                         navigate('/home')

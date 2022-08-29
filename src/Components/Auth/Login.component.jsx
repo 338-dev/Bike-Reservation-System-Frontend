@@ -38,7 +38,7 @@ const Login=({fetchBikes,fetchUser,fetchAllUsers,fetchBikesWithPages,state})=>{
      
                  toast.success('Logged in successfully')
                  console.log(data.data)
-                localStorage.setItem('token',JSON.stringify({jwt:data.data.jwt,expiry:new Date().getTime()+3600000,role:data.data.role}))
+                localStorage.setItem('token',JSON.stringify({jwt:data.data.jwt,expiry:new Date().getTime()+5*3600000,role:data.data.role}))
 
                 // fetchBikes();
                 fetchUser();

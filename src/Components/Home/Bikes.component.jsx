@@ -20,14 +20,14 @@ import Link from '@mui/material/Link';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Modal from 'antd/lib/modal/Modal';
-import { fetchBikes, fetchBikesWithPages, fetchUser } from '../../redux/action';
+import { fetchBikes, fetchBikesWithPages, fetchFilteredBikes, fetchUser } from '../../redux/action';
 import TextField from '@mui/material/TextField';
 import Joi from 'joi'
 import CircularProgress from '@mui/material/CircularProgress';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-function Bikes({state,dates,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSet}) {
+function Bikes({state,filter,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSet,fetchFilteredBikes}) {
   const navigate=useNavigate();
   const [bikes, setBikes] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -40,7 +40,8 @@ function Bikes({state,dates,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSet
     })
     const [editBikeId, seteditBikeId] = useState('')
     const [deleteBikeId, setDeleteBikeId] = useState('')
-  
+    const [isBikeReserved, setIsBikeReserved]=useState([false,-1])
+
     useEffect(() => {
       fetchUser()
       fetchBikesWithPages();
@@ -57,14 +58,15 @@ function Bikes({state,dates,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSet
 
     
     axios.put(`http://localhost:3001/bikes/${id}/updateReserve`,{
-      reservedFrom:dates.startDate,
-      reservedUntil:dates.endDate
+      reservedFrom:filter.startDate,
+      reservedUntil:filter.endDate
     },{
       headers:{
         jwt: JSON.parse(localStorage.getItem('token')).jwt
       }
   })
     .then((data)=>{
+      setIsBikeReserved([true,id])
       toast.success('Successfully reserved')
        
      })
@@ -155,8 +157,42 @@ function Bikes({state,dates,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSet
       }
   })
   .then((data)=>{
-    fetchBikesWithPages(state.currentBikePage);
-    
+    if(!isFilterSet && !isDateSet)
+      fetchBikesWithPages(state.currentBikePage);
+    else{
+
+      const temp={}
+        if(isFilterSet===true)
+        {    
+            if(filter.model!=='')
+            {
+                temp.model=filter.model.toLowerCase()
+            }
+            if(filter.city!=='')
+            {
+                temp.city=filter.city.toLowerCase()
+            }
+            if(filter.color!=='')
+            {
+                temp.color=filter.color.toLowerCase()
+            }
+            if(filter.minRating!=='')
+            {
+                temp.minRating=filter.minRating
+            }
+        }
+        if(isDateSet)
+        {
+          if(filter.startDate!=='' && filter.endDate!=='')
+          {
+            temp.startDate=filter.startDate
+            temp.endDate=filter.endDate
+          }
+        }
+        console.log(temp)
+
+      fetchFilteredBikes(temp,state.currentBikePage)
+    }
     setTimeout(() => {
       if(isAvailable===null || isAvailable===false ) 
       {
@@ -335,12 +371,12 @@ function Bikes({state,dates,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSet
       </Modal>
       </Stack>:''}
       </CardContent>
-      {value.isAvailable && isDateSet&& <CardActions sx={{m:'auto'}}> 
+      {value.isAvailable && isDateSet && isBikeReserved[1]!==value.id && <CardActions sx={{m:'auto'}}> 
         <Stack 
         direction={'row'} 
         justifyContent='center' >
           <Button 
-          onClick={()=>{reserve(value.id,value.reserver)}}>
+          onClick={()=>{reserve(value.id,value.reserver); setIsBikeReserved([false,-1])}}>
             Reserve
         </Button>
         </Stack>
@@ -372,6 +408,7 @@ const mapStateToProps = (state) => {
     return {
       fetchBikes: () => dispatch(fetchBikes()),
       fetchBikesWithPages: (pg) => dispatch(fetchBikesWithPages(pg)),
+      fetchFilteredBikes: (filter,pg) => dispatch(fetchFilteredBikes(filter,pg)),
 
     } 
   }

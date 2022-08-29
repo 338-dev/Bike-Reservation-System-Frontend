@@ -98,6 +98,8 @@ console.log(pg)
   }
 
   export const fetchFilteredBikes =(filter,pg=1) => {
+    console.log('qwewq')
+
     return (dispatch) => {
       console.log(pg)
       dispatch(fetchBikesPagesRequest())
@@ -109,6 +111,9 @@ console.log(pg)
         .then(response => {
           const events = response.data
           // dispatch(fetchBikesSuccess(events))
+          console.log(events)
+          console.log(events)
+
           dispatch(fetchBikesPagesSuccess(events[0]))
           dispatch(fetchTotalPages(events[1]))
 

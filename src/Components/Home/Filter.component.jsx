@@ -206,7 +206,7 @@ const mapDispatchToProps = dispatch => {
     // fetchUser: () => dispatch(fetchUser()),
     fetchBikes: () => dispatch(fetchBikes()),
     fetchBikesWithDates: (date,filter) => dispatch(fetchBikesWithDates(date,filter)),
-    fetchFilteredBikes: (date,filter,id) => dispatch(fetchFilteredBikes(date,filter,id))
+    fetchFilteredBikes: (filter,id) => dispatch(fetchFilteredBikes(filter,id))
 
 
   } 

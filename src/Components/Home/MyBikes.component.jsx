@@ -53,19 +53,7 @@ function MyBikes({state,fetchUser,fetchBikes}){
         reservedUntil:null
       })
 
-    // useEffect(() => {
-    //     if(localStorage.getItem('token')!==null && localStorage.getItem('token')!==undefined &&
-    //     localStorage.getItem('token')!=='' && JSON.parse(localStorage.getItem('token')).expiry>new Date().getTime())
-    //     {
-    //         fetchUser()
-            
-    //     }
-    //     else{
-    //         localStorage.clear()
-    //         navigate('/auth')
-    //     } 
-    // }, [])
-
+      
     useEffect(() => {
       fetchBikes();
     }, [])
