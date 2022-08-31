@@ -53,7 +53,7 @@ function MyBikes({state,fetchUser,fetchBikes}){
         reservedUntil:null
       })
 
-      
+
     useEffect(() => {
       fetchBikes();
     }, [])
@@ -271,7 +271,6 @@ const handleOk = () => {
             <Stack 
         justifyContent='center' 
         >
-            <br />
             {
             (value.rating!==null?(state.user.id in JSON.parse(value.rating)?(JSON.parse(value.rating)[state.user.id].findIndex((el)=>(el.reservedFrom===element.reservedFrom && el.review!==""))===-1?true:false):true):true)?
                 (<Stack><TextField 

@@ -5,7 +5,6 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Header from './Header.component'
 import CreateBike from './CreateBike.component'
-import Filter from './Filter.component'
 import "antd/dist/antd.css";
 import Bikes from './Bikes.component'
 import Card from '@mui/material/Card';
@@ -83,15 +82,15 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
         {    
             if(filter.model!=='')
             {
-                temp.model=filter.model.toLowerCase()
+                temp.model=filter.model.trim().toLowerCase()
             }
             if(filter.city!=='')
             {
-                temp.city=filter.city.toLowerCase()
+                temp.city=filter.city.trim().toLowerCase()
             }
             if(filter.color!=='')
             {
-                temp.color=filter.color.toLowerCase()
+                temp.color=filter.color.trim().toLowerCase()
             }
             if(filter.minRating!=='')
             {
@@ -135,15 +134,15 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
         {    
             if(filter.model!='')
             {
-                temp.model=filter.model.toLowerCase()
+                temp.model=filter.model.trim().toLowerCase()
             }
             if(filter.city!='')
             {
-                temp.city=filter.city.toLowerCase()
+                temp.city=filter.city.trim().toLowerCase()
             }
             if(filter.color!='')
             {
-                temp.color=filter.color.toLowerCase()
+                temp.color=filter.color.trim().toLowerCase()
             }
             if(filter.minRating!='')
             {
@@ -177,15 +176,15 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
         const temp={}
         if(filter.model!='')
         {
-            temp.model=filter.model.toLowerCase()
+            temp.model=filter.model.trim().toLowerCase()
         }
         if(filter.city!='')
         {
-            temp.city=filter.city.toLowerCase()
+            temp.city=filter.city.trim().toLowerCase()
         }
         if(filter.color!='')
         {
-            temp.color=filter.color.toLowerCase()
+            temp.color=filter.color.trim().toLowerCase()
         }
         if(filter.minRating!='')
         {
@@ -226,15 +225,15 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
         const temp={}
         if(filter.model!='')
         {
-            temp.model=filter.model.toLowerCase()
+            temp.model=filter.model.trim().toLowerCase()
         }
         if(filter.city!='')
         {
-            temp.city=filter.city.toLowerCase()
+            temp.city=filter.city.trim().toLowerCase()
         }
         if(filter.color!='')
         {
-            temp.color=filter.color.toLowerCase()
+            temp.color=filter.color.trim().toLowerCase()
         }
         if(filter.minRating!='')
         {
@@ -285,11 +284,7 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
     direction="row"
     justifyContent="center"
     >
-        {/* <div className='filterButton'>
-            {/* <Filter 
-            dates={availableDates} 
-            setHomeFilter={setFilter}/> }
-        </div>  */}
+
         {state.user.role==='manager'?<CreateBike email={state.user.email} bikeCreated={bikeCreatedFun}/>:''}
     </Stack>
     <div style={{"backgroundColor":'white','margin':'auto','marginTop':'20px','minWidth':'480px','width':'80%','borderRadius':'10px','paddingTop':'5px'}}>

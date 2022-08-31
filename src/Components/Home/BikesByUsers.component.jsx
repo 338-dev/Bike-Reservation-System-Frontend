@@ -68,13 +68,20 @@ export const BikesByUsers = ({state,fetchAllUsers,fetchBikes}) => {
 
     {state.allUsers.length!==0?<div> 
         { 
-            state.bikes.map((value,key)=>(state.allUsers!=='')?(value.reserver!==null?(window.location.pathname.split('/')[1].split('-')[0] in JSON.parse(value.reserver)?<Stack 
+            state.bikes.map((value,key)=>(state.allUsers!=='')?(value.reserver!==null?(window.location.pathname.split('/')[1].split('-')[0] in JSON.parse(value.reserver)?<div 
                 key={key.toString()}  
                 direction={'row'} 
                 justifyContent='center'  
                 sx={{m:1,mt:10}}>
-                 <div onLoad={()=>setIsBikeReserved(true)}></div>
-                <Card 
+                 
+                
+                  
+            {JSON.parse(value.reserver)[window.location.pathname.split('/')[1].split('-')[0]].map((date,k)=>(date.cancelled!==true)?(
+                <Stack key={k}
+                direction={'row'} 
+                justifyContent='center'  
+                sx={{m:1,mt:10}}>
+                   <Card 
                 sx={{  
                     maxWidth: 345, 
                     minWidth:245 
@@ -119,27 +126,23 @@ export const BikesByUsers = ({state,fetchAllUsers,fetchBikes}) => {
                   <HtmlTooltip
         title={
           <React.Fragment>
-            <Typography color="inherit">Reservation dates</Typography>
-            {JSON.parse(value.reserver)[window.location.pathname.split('/')[1].split('-')[0]].map((date,k)=>(
-                <div key={k}>
-                    <div>
-                        from{" "+date.reservedFrom}
-                    </div>
-                    <div>
-                        to{" "+date.reservedUntil}
-                    </div>
-<br />
-                </div>
-            ))}  
+           
+            <em>{date.reservedFrom}</em> <br />
+            <em>{date.reservedUntil}</em>
           </React.Fragment>
         }
       >
-        <Button>Reservation Dates</Button>
+        <Button>Reservation dates</Button>
       </HtmlTooltip>
                   </CardContent>
                   
                 </Card>
-            </Stack>
+<br />
+                </Stack>
+            ):false)}  
+          
+                  
+            </div>
                 
                 :''):''):'')
         } 
