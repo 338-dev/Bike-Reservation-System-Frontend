@@ -57,7 +57,7 @@ function Bikes({state,filter,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSe
     }
 
     
-    axios.put(`http://localhost:3001/bikes/${id}/updateReserve`,{
+    axios.put(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${id}/updateReserve`,{
       reservedFrom:filter.startDate,
       reservedUntil:filter.endDate
     },{
@@ -78,7 +78,7 @@ function Bikes({state,filter,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSe
   const updateBike=()=>{
  
 
-    if(bikeDetails.model==='' && bikeDetails.city==='' && bikeDetails.color==='' )
+    if(bikeDetails.model.trim()==='' && bikeDetails.city.trim()==='' && bikeDetails.color.trim()==='' )
     {
       toast.error('All 3 fields cannot be empty')
     }
@@ -87,17 +87,17 @@ function Bikes({state,filter,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSe
       let temp={};
       if(bikeDetails.model!=='')
       {
-        temp={...temp,model:bikeDetails.model}
+        temp={...temp,model:bikeDetails.model.trim()}
       }
       if(bikeDetails.city!=='')
       {
-        temp={...temp,city:bikeDetails.city}
+        temp={...temp,city:bikeDetails.city.trim()}
       }
       if(bikeDetails.color!=='')
       {
-        temp={...temp,color:bikeDetails.color}
+        temp={...temp,color:bikeDetails.color.trim()}
       }
-      axios.put(`http://localhost:3001/bikes/${editBikeId}/updateDetails`,temp,{
+      axios.put(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${editBikeId}/updateDetails`,temp,{
         headers:{
           jwt: JSON.parse(localStorage.getItem('token')).jwt
         }
@@ -132,7 +132,7 @@ function Bikes({state,filter,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSe
   };
 
   const handleOk = (id,reserve) => {
-    axios.delete(`http://localhost:3001/bikes/${deleteBikeId}/delete`,{
+    axios.delete(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${deleteBikeId}/delete`,{
       headers:{
         jwt: JSON.parse(localStorage.getItem('token')).jwt
       }
@@ -151,7 +151,7 @@ function Bikes({state,filter,fetchBikes,fetchBikesWithPages,isDateSet,isFilterSe
   };
 
   const changeAvailableStatus=(id,isAvailable)=>{
-    axios.put(`http://localhost:3001/bikes/${id}/updateAvailable`,{isAvailable:!isAvailable},{
+    axios.put(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${id}/updateAvailable`,{isAvailable:!isAvailable},{
       headers:{
         jwt: JSON.parse(localStorage.getItem('token')).jwt
       }

@@ -28,9 +28,9 @@ const CreateBike = ({email,fetchBikes,bikeCreated,fetchBikesWithPages}) => {
     })
     
     const schema = Joi.object({
-      model: Joi.string().min(2).max(30).required(),
-      color: Joi.string().min(2).max(30).required(),
-      city: Joi.string().min(2).max(30).required(),
+      model: Joi.string().trim().min(2).max(30).required(),
+      color: Joi.string().trim().min(2).max(30).required(),
+      city: Joi.string().trim().min(2).max(30).required(),
     });
 
 
@@ -46,7 +46,7 @@ const CreateBike = ({email,fetchBikes,bikeCreated,fetchBikesWithPages}) => {
 
       if(!error)
       {
-        axios.post("http://localhost:3001/bikes/create",bikeDetails,{
+        axios.post("https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/create",bikeDetails,{
           headers:{
             jwt: JSON.parse(localStorage.getItem('token')).jwt
           }

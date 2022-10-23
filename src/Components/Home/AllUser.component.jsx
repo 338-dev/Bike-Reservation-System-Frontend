@@ -55,10 +55,10 @@ export const AllUser = ({state,fetchAllUsers}) => {
     
 
     const schema = Joi.object({
-        name: Joi.string().required(),
-        email: Joi.string().email({ tlds: { allow: false } }).required(),
-        password: Joi.string().required().pattern(new RegExp('^[a-zA-Z0-9]{8,30}$')),
-        role:Joi.string().required()
+        name: Joi.string().trim().min(3).required(),
+        email: Joi.string().trim().email({ tlds: { allow: false } }).required(),
+        password: Joi.string().trim().min(8).max(30).required(),
+        role:Joi.string().trim().required()
       });
 
       const handleSubmit=()=>{
@@ -67,7 +67,7 @@ export const AllUser = ({state,fetchAllUsers}) => {
         console.log(result); 
         const { error } = result;
         if (!error) {
-            axios.post("http://localhost:3001/user/create", newUser,{
+            axios.post("https://bike-reserve-sys-bsr-12321.herokuapp.com/user/create", {...newUser,name:newUser.name.trim(),email:newUser.email.trim().toLowerCase()},{
               headers:{
                 jwt: JSON.parse(localStorage.getItem('token')).jwt
               }
@@ -99,7 +99,7 @@ export const AllUser = ({state,fetchAllUsers}) => {
     }
 
     const userDelete=()=>{
-        axios.delete(`http://localhost:3001/user/${deleteUserId}/delete`,{
+        axios.delete(`https://bike-reserve-sys-bsr-12321.herokuapp.com/user/${deleteUserId}/delete`,{
           headers:{
             jwt: JSON.parse(localStorage.getItem('token')).jwt
           }
@@ -121,7 +121,7 @@ export const AllUser = ({state,fetchAllUsers}) => {
 
     const handleEditUser=()=>{
       let temp={}
-      if(editUser.name==='' && editUser.email==='' && editUser.role==='')
+      if(editUser.name.trim()==='' && editUser.email.trim()==='' && editUser.role.trim()==='')
       {
         toast.error('Fill atleast 1 field')
         return;
@@ -129,18 +129,18 @@ export const AllUser = ({state,fetchAllUsers}) => {
 
       if(editUser.name!=='')
       {
-        temp={...temp,name:editUser.name}
+        temp={...temp,name:editUser.name.trim()}
       }
       if(editUser.email!=='')
       {
-        temp={...temp,email:editUser.email}
+        temp={...temp,email:editUser.email.trim().toLowerCase()}
       }
       if(editUser.role!=='')
       {
-        temp={...temp,role:editUser.role}
+        temp={...temp,role:editUser.role.trim()}
       }
 
-      axios.put(`http://localhost:3001/user/${editUserId}/update`,temp,{
+      axios.put(`https://bike-reserve-sys-bsr-12321.herokuapp.com/user/${editUserId}/update`,temp,{
         headers:{
           jwt: JSON.parse(localStorage.getItem('token')).jwt
         }

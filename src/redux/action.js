@@ -6,7 +6,7 @@ export const fetchBikes =() => {
     return (dispatch) => {
       if(JSON.parse(localStorage.getItem('token'))!==null){
       dispatch(fetchBikesRequest())
-       axios.get('http://localhost:3001/bikes',{
+       axios.get('https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes',{
                 headers:{
                   jwt: JSON.parse(localStorage.getItem('token')).jwt
                 }
@@ -34,7 +34,7 @@ console.log('page')
 console.log(pg)
 
       dispatch(fetchBikesPagesRequest())
-       axios.get(`http://localhost:3001/bikes/page/${pg}`,{
+       axios.get(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/page/${pg}`,{
                 headers:{
                   jwt: JSON.parse(localStorage.getItem('token')).jwt
                 }
@@ -58,7 +58,7 @@ console.log(pg)
     if(JSON.parse(localStorage.getItem('token'))!==null)
     {
       dispatch(fetchAllUsersRequest())
-       axios.get('http://localhost:3001/user',{
+       axios.get('https://bike-reserve-sys-bsr-12321.herokuapp.com/user',{
                 headers:{
                   jwt: JSON.parse(localStorage.getItem('token')).jwt
                 }
@@ -80,7 +80,7 @@ console.log(pg)
     return (dispatch) => {
       if(JSON.parse(localStorage.getItem('token'))!==null){
       dispatch(fetchUserRequest())
-        axios.get("http://localhost:3001/user/verify",{
+        axios.get("https://bike-reserve-sys-bsr-12321.herokuapp.com/user/verify",{
                 headers:{
                   jwt: JSON.parse(localStorage.getItem('token')).jwt
                 }
@@ -103,7 +103,7 @@ console.log(pg)
     return (dispatch) => {
       console.log(pg)
       dispatch(fetchBikesPagesRequest())
-       axios.post(`http://localhost:3001/bikes/filter/${pg}`,{...filter},{
+       axios.post(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/filter/${pg}`,{...filter},{
                 headers:{
                   jwt: JSON.parse(localStorage.getItem('token')).jwt
                 }
@@ -129,7 +129,7 @@ console.log(pg)
   export const fetchBikesWithDates =(dates,filter) => {
     return (dispatch) => {
       dispatch(fetchBikesRequest())
-       axios.get('http://localhost:3001/bikes',{
+       axios.get('https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes',{
                 headers:{
                   jwt: JSON.parse(localStorage.getItem('token')).jwt
                 }

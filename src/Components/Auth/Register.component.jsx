@@ -39,7 +39,7 @@ const Register=({formStatus,fetchBikes,fetchUser,fetchAllUsers,fetchBikesWithPag
         const { error } = result;
 
         if (!error) {
-            axios.post("http://localhost:3001/user/register", 
+            axios.post("https://bike-reserve-sys-bsr-12321.herokuapp.com/user/register", 
             {...registerForm,
             email:registerForm.email.toLowerCase()},
             {withCredentials:true})
@@ -48,7 +48,7 @@ const Register=({formStatus,fetchBikes,fetchUser,fetchAllUsers,fetchBikesWithPag
                 toast.success('Signed up successfully')
      
                 setTimeout(() => {
-                    axios.post("http://localhost:3001/user/login", 
+                    axios.post("https://bike-reserve-sys-bsr-12321.herokuapp.com/user/login", 
                     {
                         email:registerForm.email.toLowerCase(),
                         password:registerForm.password

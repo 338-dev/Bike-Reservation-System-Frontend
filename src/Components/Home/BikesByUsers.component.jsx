@@ -59,7 +59,7 @@ export const BikesByUsers = ({state,fetchAllUsers,fetchBikes}) => {
               { 
                 if(value.reserver!==null)
                 {
-                  return (window.location.pathname.split('/')[1].split('-')[0] in JSON.parse(value.reserver))
+                  return (window.location.pathname.split('/')[1].split('-')[0] in JSON.parse(value.reserver) && Object.keys(JSON.parse(value.reserver)[window.location.pathname.split('/')[1].split('-')[0]]).length!==0)
                 } 
               }
             })===false?<h1>No bike booked yet</h1>:''
@@ -76,7 +76,7 @@ export const BikesByUsers = ({state,fetchAllUsers,fetchBikes}) => {
                  
                 
                   
-            {JSON.parse(value.reserver)[window.location.pathname.split('/')[1].split('-')[0]].map((date,k)=>(date.cancelled!==true)?(
+            {Object.keys(JSON.parse(value.reserver)[window.location.pathname.split('/')[1].split('-')[0]]).map((date,k)=>(date.cancelled!==true)?(
                 <Stack key={k}
                 direction={'row'} 
                 justifyContent='center'  
@@ -126,9 +126,9 @@ export const BikesByUsers = ({state,fetchAllUsers,fetchBikes}) => {
                   <HtmlTooltip
         title={
           <React.Fragment>
-           
-            <em>{date.reservedFrom}</em> <br />
-            <em>{date.reservedUntil}</em>
+           {console.log(date)}
+            <em>{"from "+date.split('-')[0]}</em> <br />
+            <em>{"to "+date.split('-')[1]}</em>
           </React.Fragment>
         }
       >

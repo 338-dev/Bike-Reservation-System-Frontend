@@ -30,7 +30,7 @@ export const ReservedBy = ({state,fetchAllUsers,fetchBikes}) => {
     }, [])
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/bikes/${parseInt(window.location.pathname.split('/')[1])}`,{
+        axios.get(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${parseInt(window.location.pathname.split('/')[1])}`,{
             headers:{
               jwt: JSON.parse(localStorage.getItem('token')).jwt
             }
@@ -52,8 +52,8 @@ export const ReservedBy = ({state,fetchAllUsers,fetchBikes}) => {
     {
         state.allUsers.map((element,key)=>(
             <div>
-            {element.id in JSON.parse(currentBike[0].reserver)?<div key={key}>
-            {JSON.parse(currentBike[0].reserver)[element.id].map((date,k)=>(
+            {element.id in JSON.parse(currentBike[0].reserver) && JSON.parse(currentBike[0].reserver)[element.id].length!==0?<div key={key}>
+            {Object.keys(JSON.parse(currentBike[0].reserver)[element.id]).map((date,k)=>(
 
              
                 <Stack   
@@ -68,10 +68,10 @@ export const ReservedBy = ({state,fetchAllUsers,fetchBikes}) => {
                             <CardContent>
                             
                             <Typography style={{'position':'absolute'}}> 
-                            from{" "+date.reservedFrom}
+                            from{" "+date.split('-')[0]}
                             </Typography>  
                             <Typography style={{'position':'absolute','marginTop':'20px'}}> 
-                            to{" "+date.reservedUntil}
+                            to{" "+date.split('-')[1]}
                             </Typography>  
                             <Typography
                             > 

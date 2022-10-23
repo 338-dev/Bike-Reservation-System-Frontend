@@ -204,11 +204,12 @@ function Home({fetchUser,fetchBikesWithDates,fetchFilteredBikes,fetchBikesWithPa
 
     const applyFilter=()=>{
 
+        
 
         if(JSON.stringify({
-            model:filter.model,
-            color:filter.color,
-            city:filter.city,
+            model:filter.model.trim(),
+            color:filter.color.trim(),
+            city:filter.city.trim(),
             minRating:filter.minRating
         })===JSON.stringify({
             model:"",

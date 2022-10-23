@@ -77,7 +77,7 @@ const showModalReview=(key,kee)=>{
 
 const handleOk = () => {
 
-  axios.put(`http://localhost:3001/bikes/${cancelReservationPara.id}/cancelReserve`,{
+  axios.put(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${cancelReservationPara.id}/cancelReserve`,{
       reservedFrom:cancelReservationPara.reservedFrom,
       reservedUntil:cancelReservationPara.reservedUntil
   },{
@@ -109,11 +109,13 @@ const handleOk = () => {
         setIsModalReviewVisible(false);
       }
 
-      const rate=(key,id,rating,reservedFrom)=>{
+      const rate=(key,id,rating,date)=>{
 
-        axios.put(`http://localhost:3001/bikes/${id}/updateRate`,{
+        axios.put(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${id}/updateRate`,{
             rate:key,
-            reservedFrom:reservedFrom
+            reservedFrom:date.split('-')[0],
+            reservedUntil:date.split('-')[1]
+
         },{
             headers:{
               jwt: JSON.parse(localStorage.getItem('token')).jwt
@@ -127,16 +129,17 @@ const handleOk = () => {
         })
       }
 
-      const review=(key,id,rating,reservedFrom)=>{
+      const review=(key,id,rating,date)=>{
         if(writeReview.trim().length === 0)
         {
           toast.error('Cannot write empty review')
           return 
         }
 
-        axios.put(`http://localhost:3001/bikes/${id}/updateRate`,{
-            review:writeReview,
-            reservedFrom:reservedFrom
+        axios.put(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${id}/updateRate`,{
+            review:writeReview.trim(),
+            reservedFrom:date.split('-')[0],
+            reservedUntil:date.split('-')[1]
         },{
             headers:{
               jwt: JSON.parse(localStorage.getItem('token')).jwt
@@ -155,6 +158,7 @@ const handleOk = () => {
         })
 
       }
+      // console.log(JSON.parse(value.rating)[state.user.id])
 
       const HtmlTooltip = styled(({ className, ...props }) => (
         <Tooltip {...props} classes={{ popper: className }} />
@@ -195,6 +199,113 @@ const handleOk = () => {
       Cancelled Bikes
       </Box>
     </Stack>
+    <div>
+    {
+           bikesCategory==='cancelled'&&state.bikes.map((value,key)=>{
+                return(
+                    value.cancelled!== null?state.user.id in JSON.parse(value.cancelled):false
+                    )? (
+                        
+                    
+        <Stack 
+        key={key.toString()}  
+        
+        justifyContent='center'  
+        sx={{m:1}}
+        >{console.log(JSON.parse(value.cancelled)[state.user.id])}
+            {
+            JSON.parse(value.cancelled)[state.user.id].map((element,kee)=>( bikesCategory==='cancelled' && (
+              <Stack
+              key={kee} 
+              direction={'row'} 
+              justifyContent='center' 
+              sx={{m:1,mt:4}}
+              >
+      <Card 
+      sx={{ 
+          maxWidth: 245, 
+          minWidth:245 
+          }}>
+        <CardContent>
+          <Typography 
+          gutterBottom variant="h5" 
+          component="div">
+            {value.model}
+          </Typography>
+          <Typography 
+          gutterBottom 
+          component="div">
+            {value.color}
+          </Typography>
+    
+
+        <Box 
+          sx={{ 
+              display: 'flex', 
+              alignItems: 'flex-end' 
+              }}>
+          <LocationOnIcon 
+          sx={{ 
+              color: 'action.active', 
+              mr: 1, 
+              my: 0.5 
+              }} />
+          <Typography 
+          gutterBottom 
+          component="div"> 
+            {value.city}
+          </Typography>
+  
+        </Box>
+        <HtmlTooltip
+      title={
+        <React.Fragment>
+          <Typography color="inherit">Reservation date</Typography>
+          <div>{console.log(element)}
+              {'from '+element.reservedFrom}
+          </div>
+          <div> 
+          {'to '+element.reservedUntil}
+          </div> 
+          
+        </React.Fragment>
+      }
+    >
+      <Button 
+      size="small">Reservation Dates</Button>
+    </HtmlTooltip>
+       
+        </CardContent>
+        {bikesCategory==='reserved' &&<CardActions 
+      direction={'row'} 
+      >
+          <Button 
+          size="small"
+          color='error' 
+          onClick={()=>{showModal();
+          setCancelReservationPara({id:value.id,reserve:value.reserver,reservedFrom:element.split('-')[0],reservedUntil:element.split('-')[1]});}}>
+              Cancel Reservation 
+          </Button>
+          <Modal title="Cancel Reservation" visible={isModalVisible} onOk={()=>handleOk()} onCancel={()=>handleCancel()}>
+      <div>
+          <p>Do you really want to cancel reservation?
+          </p>
+      </div>  
+
+    </Modal>
+        </CardActions>}
+      </Card>
+    <ToastContainer/>
+      
+      </Stack>)))
+            }
+           
+    </Stack>
+                
+                ):''
+            })
+        }
+    </div>
         {
             state.bikes.map((value,key)=>{
                 return(
@@ -209,155 +320,162 @@ const handleOk = () => {
         sx={{m:1}}
         >
             {
-            JSON.parse(value.reserver)[state.user.id].map((element,kee)=>( bikesCategory==='reserved'?(element.cancelled!==true?true:false):bikesCategory==='cancelled'?(element.cancelled===true?true:false):false)?(
-                <Stack
-                key={kee} 
-                direction={'row'} 
-                justifyContent='center' 
-                sx={{m:1,mt:4}}
-                >
-        <Card 
-        sx={{ 
-            maxWidth: 245, 
-            minWidth:245 
-            }}>
-          <CardContent>
-            <Typography 
-            gutterBottom variant="h5" 
-            component="div">
-              {value.model}
-            </Typography>
-            <Typography 
-            gutterBottom 
-            component="div">
-              {value.color}
-            </Typography>
-           {bikesCategory==='reserved' &&<div>
-                   {showReviewsAndRatings===false ||reviewAndRatingKey[0]!==key || reviewAndRatingKey[1]!==kee?<Link href='#' onClick={()=>{showModalReview(key,kee)}}>Rating and Review</Link>:''}
-                   <br /></div>}
-{showReviewsAndRatings && reviewAndRatingKey[0]===key && reviewAndRatingKey[1]===kee?<div>
-            {
-                [1,2,3,4,5].map((val,k)=>{
-                    
-                    return(value.rating===null?true: value.rating!==null?(state.user.id in JSON.parse(value.rating)===false?true:false):false)?(
-                    <StarOutlineIcon 
-                    key={k.toString()}
-                    color={'success'} 
-                    style={{'cursor':'pointer'}}
-                    onClick={()=>{rate(k+1,value.id,value.rating,element.reservedFrom)}}/>
-                    ):
-                    (value.rating!==null?(JSON.parse(value.rating)[state.user.id].findIndex(i=>(i.reservedFrom===element.reservedFrom && i.rate !==0))!==-1?(k+1<=JSON.parse(value.rating)[state.user.id][JSON.parse(value.rating)[state.user.id].findIndex(i=>(i.reservedFrom===element.reservedFrom))].rate?true:false):false):false)?
-                    <StarIcon 
-                    key={k} 
-                    color={'success'}
-                    />:
-                    (value.rating!==null?(state.user.id in JSON.parse(value.rating) && JSON.parse(value.rating)[state.user.id].some((el)=>{
-                      return (el.reservedFrom===element.reservedFrom && el.rate!==0)
-                    })===true?true:false):false)?(
-                      <StarOutlineIcon 
-                    key={k}
-                    color={'success'}
-                    />
-                    ):
-                    <StarOutlineIcon 
-                    key={k}
-                    color={'success'}
-                    style={{'cursor':'pointer'}}
-                    onClick={()=>{rate(k+1,value.id,value.rating,element.reservedFrom)}}/>
-                }) 
-            }
-<br />
-            
-            <Stack 
-        justifyContent='center' 
-        >
-            {
-            (value.rating!==null?(state.user.id in JSON.parse(value.rating)?(JSON.parse(value.rating)[state.user.id].findIndex((el)=>(el.reservedFrom===element.reservedFrom && el.review!==""))===-1?true:false):true):true)?
-                (<Stack><TextField 
-            id="outlined-basic"
-            label="Write review"
-            variant="outlined"
-            name='Write review'
-            onChange={(e)=>{setWriteReview(e.target.value)}}
-            value={writeReview}/> <Button onClick={()=>review(key,value.id,value.rating,element.reservedFrom)}>Submit</Button></Stack>):
-            JSON.parse(value.rating)[state.user.id].findIndex((el)=>(el.reservedFrom===element.reservedFrom))!==-1?JSON.parse(value.rating)[state.user.id][JSON.parse(value.rating)[state.user.id].findIndex((el)=>(el.reservedFrom===element.reservedFrom))].review:''} 
-          </Stack>    </div>:''
-}          {/* </Modal> */}
-          <Box 
-            sx={{ 
-                display: 'flex', 
-                alignItems: 'flex-end' 
-                }}>
-            <LocationOnIcon 
-            sx={{ 
-                color: 'action.active', 
-                mr: 1, 
-                my: 0.5 
-                }} />
-            <Typography 
-            gutterBottom 
-            component="div"> 
-              {value.city}
-            </Typography>
-    
-          </Box>
-          <HtmlTooltip
-        title={
-          <React.Fragment>
-            <Typography color="inherit">Reservation date</Typography>
-            <div>
-                {'from '+element.reservedFrom}
-            </div>
-            <div> 
-            {'to '+element.reservedUntil}
-            </div> 
-            
-          </React.Fragment>
-        }
-      >
-        <Button 
-        size="small">Reservation Dates</Button>
-      </HtmlTooltip>
-         
-          </CardContent>
-          {bikesCategory==='reserved' &&<CardActions 
-        direction={'row'} 
-        >
-            <Button 
-            size="small"
-            color='error' 
-            onClick={()=>{showModal();
-            setCancelReservationPara({id:value.id,reserve:value.reserver,reservedFrom:element.reservedFrom,reservedUntil:element.reservedUntil});}}>
-                Cancel Reservation 
-            </Button>
-            <Modal title="Cancel Reservation" visible={isModalVisible} onOk={()=>handleOk()} onCancel={()=>handleCancel()}>
-        <div>
-            <p>Do you really want to cancel reservation?
-            </p>
-        </div>  
+            Object.keys(JSON.parse(value.reserver)[state.user.id]).map((element,kee)=>( bikesCategory==='reserved' && (
+              <Stack
+              key={kee} 
+              direction={'row'} 
+              justifyContent='center' 
+              sx={{m:1,mt:4}}
+              >
+      <Card 
+      sx={{ 
+          maxWidth: 245, 
+          minWidth:245 
+          }}>
+        <CardContent>
+          <Typography 
+          gutterBottom variant="h5" 
+          component="div">
+            {value.model}
+          </Typography>
+          <Typography 
+          gutterBottom 
+          component="div">
+            {value.color}
+          </Typography>
+         {bikesCategory==='reserved' &&<div>
+                 {showReviewsAndRatings===false ||reviewAndRatingKey[0]!==key || reviewAndRatingKey[1]!==kee?<Link href='#' onClick={()=>{showModalReview(key,kee)}}>Rating and Review</Link>:''}
+                 <br /></div>}
+    {console.log(JSON.parse(value.rating))}
+    {console.log(state.user.id)}
 
-      </Modal>
-          </CardActions>}
-        </Card>
-      <ToastContainer/>
-        
-        </Stack>):'')}
+{showReviewsAndRatings && reviewAndRatingKey[0]===key && reviewAndRatingKey[1]===kee?<div>
+          {
+              [1,2,3,4,5].map((val,k)=>{
+                  
+                  return(value.rating!==null?(state.user.id in JSON.parse(value.rating)===true && Object.keys(JSON.parse(value.rating)[state.user.id]).length!==0 && element in JSON.parse(value.rating)[state.user.id]?(JSON.parse(value.rating)[state.user.id][element].rate===0):''):false)?(<>
+                  <StarOutlineIcon 
+                  key={k.toString()}
+                  color={'success'} 
+                  style={{'cursor':'pointer'}}
+                  onClick={()=>{rate(k+1,value.id,value.rating,element)}}/>
+                  {console.log('iuqhdiuwbd')}</>):
+                  (value.rating!==null?(JSON.parse(value.rating)[state.user.id][element].rate>0?(k+1<=JSON.parse(value.rating)[state.user.id][element].rate?true:false):false):false)?
+                  <StarIcon 
+                  key={k} 
+                  color={'success'}
+                  />:
+                  <StarOutlineIcon 
+                  key={k}
+                  color={'success'}
+                  />
+              }) 
+          }
+<br />
+          
+          <Stack 
+      justifyContent='center' 
+      >
+          {
+          (value.rating!==null?(state.user.id in JSON.parse(value.rating)?(JSON.parse(value.rating)[state.user.id][element].review===null?
+              (<Stack><TextField 
+          id="outlined-basic"
+          label="Write review"
+          variant="outlined"
+          name='Write review'
+          onChange={(e)=>{setWriteReview(e.target.value)}}
+          value={writeReview}/> <Button onClick={()=>review(key,value.id,value.rating,element)}>Submit</Button></Stack>):
+          JSON.parse(value.rating)[state.user.id][element].review):''):'')} 
+        </Stack>    </div>:''
+}          {/* </Modal> */}
+        <Box 
+          sx={{ 
+              display: 'flex', 
+              alignItems: 'flex-end' 
+              }}>
+          <LocationOnIcon 
+          sx={{ 
+              color: 'action.active', 
+              mr: 1, 
+              my: 0.5 
+              }} />
+          <Typography 
+          gutterBottom 
+          component="div"> 
+            {value.city}
+          </Typography>
+  
+        </Box>
+        <HtmlTooltip
+      title={
+        <React.Fragment>
+          <Typography color="inherit">Reservation date</Typography>
+          <div>{console.log(element)}
+              {'from '+element.split('-')[0]}
+          </div>
+          <div> 
+          {'to '+element.split('-')[1]}
+          </div> 
+          
+        </React.Fragment>
+      }
+    >
+      <Button 
+      size="small">Reservation Dates</Button>
+    </HtmlTooltip>
+       
+        </CardContent>
+        {bikesCategory==='reserved' &&<CardActions 
+      direction={'row'} 
+      >
+          <Button 
+          size="small"
+          color='error' 
+          onClick={()=>{showModal();
+          setCancelReservationPara({id:value.id,reserve:value.reserver,reservedFrom:element.split('-')[0],reservedUntil:element.split('-')[1]});}}>
+              Cancel Reservation 
+          </Button>
+          <Modal title="Cancel Reservation" visible={isModalVisible} onOk={()=>handleOk()} onCancel={()=>handleCancel()}>
+      <div>
+          <p>Do you really want to cancel reservation?
+          </p>
+      </div>  
+
+    </Modal>
+        </CardActions>}
+      </Card>
+    <ToastContainer/>
+      
+      </Stack>)))
+            }
+           
     </Stack>
                 
                 ):''
             })
         } 
         {
-            state.bikes.some((val,index,array)=>{
+           bikesCategory==='reserved' && state.bikes.some((val,index,array)=>{
                 if(val.reserver!== null)
                 {
-                    return state.user.id in JSON.parse(val.reserver) 
+                  
+                    return state.user.id in JSON.parse(val.reserver) && Object.keys(JSON.parse(val.reserver)[state.user.id]).length!==0  
                     
                 }
 
             })===false?<h1>No bikes reserved by user</h1>:''
         }
-        
+        {
+           bikesCategory==='cancelled' && state.bikes.some((val,index,array)=>{
+                if(val.cancelled!== null)
+                {
+                  
+                    return state.user.id in JSON.parse(val.cancelled) && Object.keys(JSON.parse(val.cancelled)[state.user.id]).length!==0  
+                    
+                }
+
+            })===false?<h1>No cancelled bikes</h1>:''
+        }
         </div> 
         </>
       )

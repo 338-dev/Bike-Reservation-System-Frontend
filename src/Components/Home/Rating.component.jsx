@@ -25,7 +25,7 @@ export const Rating = ({state,fetchAllUsers}) => {
 
     useEffect(() => {
       // fetchAllUsers()
-      axios.get(`http://localhost:3001/bikes/${parseInt(window.location.pathname.split('/')[1])}`,{
+      axios.get(`https://bike-reserve-sys-bsr-12321.herokuapp.com/bikes/${parseInt(window.location.pathname.split('/')[1])}`,{
         headers:{
           jwt: JSON.parse(localStorage.getItem('token')).jwt
         }
@@ -35,17 +35,23 @@ export const Rating = ({state,fetchAllUsers}) => {
         if(data.data.rating!==null)
         {
             let tmp=0,num=0;
-            Object.keys(JSON.parse(data.data.rating)).map((element,k)=>{
-              JSON.parse(data.data.rating)[element].map((elm,ky)=>{
-                if(elm.rate!==0)
+            Object.keys(JSON.parse(data.data.rating)).forEach((element)=>{
+              Object.keys(JSON.parse(data.data.rating)[element]).forEach((elm)=>{
+                if(JSON.parse(data.data.rating)[element][elm].rate!==0)
                 {
-                    tmp+=elm.rate
+                    tmp+=JSON.parse(data.data.rating)[element][elm].rate
                     num+=1;
                 }
               })
             
             }) 
+            if(tmp/num<1)
+            {
+              setAvgRating(0)
+            }
+            else{
             setAvgRating(tmp/num)
+            }
         }
       })
     }, [])
@@ -58,7 +64,6 @@ export const Rating = ({state,fetchAllUsers}) => {
       ):(
         <div style={{'backgroundColor':'antiqueWhite','height': '100vh'}}>
         <Header/>
-        
         {currentBike.length!==0?(currentBike[0].rating!==null?
         <div>
         {avgRating!==-1?<div>
@@ -88,9 +93,9 @@ export const Rating = ({state,fetchAllUsers}) => {
                        { 
                         Object.keys(JSON.parse(value.rating)).map((element,k)=>(
                         
-                          <div>
+                          <div key={k}>
                             {
-                              JSON.parse(value.rating)[element].map((el,kee)=>(el.review.length!==0)?(
+                              Object.keys(JSON.parse(value.rating)[element]).map((el,kee)=>(JSON.parse(value.rating)[element][el].review!==null)?(
                                 <Stack 
                     key={kee} 
                     direction={'row'}
@@ -100,7 +105,7 @@ export const Rating = ({state,fetchAllUsers}) => {
                     <div style={{width:'500px','backgroundColor':'white',"padding":'10px','borderRadius':'5px',float:'left'}}> 
                        
                         <div>
-                            <li>{el.review}</li>
+                            <li>{JSON.parse(value.rating)[element][el].review}</li>
                             
                         </div>                            </div>
                     </Stack>
